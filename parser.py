@@ -21,7 +21,6 @@ def check_plus_minus(bits):
 				raise TypeError('Missing +/- symbol or you didn\'t leave a space between operands and variable')
 		return 1 #check even
 	else:
-
 		for abit in bits[1::2]:
 			if abit not in ('-','+'):
 				raise TypeError('Missing +/- symbol or you didn\'t leave a space between operands and variable')
@@ -39,8 +38,7 @@ def check_xs(bits,flag,key,var_count=None):
 		
 		if not check:
 			raise TypeError(f'Objective function variables must be of format: INTEGERXi\ni.e. 5x1, 2.5x1\nYours were: {abit}')
-		
-		
+
 		xi=abit.split('x')[-1]
 		
 		if key=='o':
@@ -64,31 +62,26 @@ def table(bits,flag,key,var_count=None):
 		operands_pos=wheretostartfrom[0]
 	else:
 		operands_pos=wheretostartfrom[1]
-
 	
 	weights,operands=[abit.split('x')[0] if abit.split('x')[0]!='' else '1' for abit in bits[xs_pos::2]],[abit for abit in bits[operands_pos::2]]
 			
 	if len(weights)!=len(operands):
-		operands.insert(0,'+') #if lists' sizes not equal, it means that the first variable's weight is + and the user did not provide it
+		operands.insert(0,'+') #if lists' sizes not equal, it means that the first variable's operand is + and the user did not type it
 
 	table=list(float(atuple[0]+atuple[1]) for atuple in zip(operands,weights))
 	
 	if key=='c':
 		#add 0 for vars with weight 0
-		
+
 		varsin=[int(abit.split('x')[-1]) for abit in bits[xs_pos::2]] #variables without 0 weight in constrains inequalities
 		varsmissing=[i for i in range(1,var_count+1) if i not in varsin] #variables with 0 weight
 		for i in varsmissing:
 			table.insert(i-1,0)
-			
 	
 	return table
 
 
 def constrains_check(lines,var_count):
-	#s.t #st #subject
-	
-
 	eqin,a_table,b_table=[],[],[]
 	
 	for index,aline in enumerate(lines):
@@ -126,15 +119,11 @@ def st_check(abit):
 		raise TypeError(f'Subject to tag missing or misspelled in first constrain.\nAvailable options: s.t., st, subject\nYour input was {abit}')
 			
 	
-def remove_empty_lines(lp1):
-	
-	return list(filter(lambda x: x!='',filter(lambda x: x!='\t',filter(lambda x: not re.match(r'^\s*$', x), lp1)))) 
+def remove_junk_chars(lp1):
 	#removes empty lines, lines containining \t character, and lines containing just whitespace characters
+	return list(filter(lambda x: x!='',filter(lambda x: x!='\t',filter(lambda x: not re.match(r'^\s*$', x), lp1)))) 
 
-
-lp1=remove_empty_lines(list_lines_txt('lp1.txt'))
-
+lp1=remove_junk_chars(list_lines_txt('lp1.txt'))
 c,MinMax=objective_function_check(lp1[0])
 a,b,eqin=constrains_check(lp1[1:len(lp1)-1],len(c))
-
 write_to_text_file('outputfile.txt',f"Min or Max:\n{MinMax}\nC Table:\n{c}\nA table:\n{a}\nInequalities operands (eqin table):\n{eqin}\nB table:\n{b}")
