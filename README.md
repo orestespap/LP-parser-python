@@ -1,4 +1,5 @@
-﻿Initially, the parser breaks down the input file into two chunks; the first line, which is supposed to contain the objective function,
+# LP Parser, written in Python 3.7+
+Initially, the parser breaks down the input file into two chunks; the first line, which is supposed to contain the objective function,
 and the rest of the lines minus the last one, which contain the technological and natural constrains respectively.
 
 All the lines (m count) are now stored into a 1xm array. Each line (item in list) then undergoes a whitespace character cleaning process,
