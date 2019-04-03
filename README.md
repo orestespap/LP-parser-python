@@ -5,6 +5,7 @@ All the lines (m count) are now stored into a 1xm array. Each line (item in list
 in which whitespace and \t characters are being removed.
 
 To ensure the validity of the objective function's format, the parser splits the text line on spaces, and does the following:
+	
 	- Checks that the first element is either min or max
 	
 	- Then checks the second element of the array. If it is an operand (+ or -), it assumes that all operators are located in the
