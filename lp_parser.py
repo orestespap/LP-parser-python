@@ -7,7 +7,7 @@ def objective_function_check(firstline):
 	bits=list(map(lambda abit: abit.lower(),filter(None,firstline.replace('\t','').split(' ')))) #first removse empty characters from list, then lowercase everything
 	
 	if bits[0] in ('min','max'):
-		max_index=check_xs(bits[1::],check_plus_minus(bits[1:]),'o',1)
+		max_index=check_xs(bits[1::],check_plus_minus(bits[1:]))
 		return max_index,minmaxmap[bits[0]],bits[1:]
 	else:
 		raise TypeError('Missing min or max tag before objective function in line 1')
@@ -25,7 +25,7 @@ def check_plus_minus(bits):
 				raise TypeError('Missing +/- symbol or you didn\'t leave a space between operator and operand.\nAt least one space between operand and operator is required.\ni.e. x1 + 2x2')
 		return 0 #operands must be in odd array positions
 
-def check_xs(bits,flag,key,size_check=None):
+def check_xs(bits,flag):
 	wheretostartfrom,prev={1:1,0:0},0
 	
 	start=wheretostartfrom[flag]
@@ -43,12 +43,8 @@ def check_xs(bits,flag,key,size_check=None):
 		if int(xi)<=prev: #or int(xi)>var_count:
 			raise TypeError(f'Constrain\'s variable identifiers (i) must follow a specific order: i= (1,2,3,...n) and belong to the range of 1 to {var_count}\nYour input was: x{xi}')
 		prev=int(xi)
-	
 
-	if not size_check:
-		return table(bits,flag,key)
-	else:
-		return xi
+	return xi
 
 def table(bits,flag,var_count=None):
 	wheretostartfrom={1:1,0:0}
@@ -95,7 +91,7 @@ def constrains_check(lines,var_count):
 		
 		lines_of_a.append(bits[:-2])
 	
-	var_indexes=[check_xs(aline,check_plus_minus(aline),'c',1) for aline in lines_of_a]
+	var_indexes=[check_xs(aline,check_plus_minus(aline)) for aline in lines_of_a]
 	var_count=int(max(var_indexes)) if int(max(var_indexes))>var_count else var_count #if greater than the greatest index in c table
 	
 	a_table=[table(aline,check_plus_minus(aline),var_count) for aline in lines_of_a]
@@ -138,4 +134,4 @@ def launch_parser(file_name):
 
 if __name__=='__main__':
 	a,b,c,eqin,MinMax,var_count=launch_parser('lp1.txt')
-	write_to_text_file('outputfile_1.txt',f"Min or Max:\n{MinMax}\n\nC Table:\n{c}\n\nA table:\n{a}\n\nInequalities' operators (eqin table):\n{eqin}\n\nB table:\n{b}")
+	write_to_text_file('outputfile.txt',f"Min or Max:\n{MinMax}\n\nC Table:\n{c}\n\nA table:\n{a}\n\nInequalities' operators (eqin table):\n{eqin}\n\nB table:\n{b}")
